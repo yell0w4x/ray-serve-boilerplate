@@ -1,0 +1,49 @@
+# This file was generated using the `serve build` command on Ray v2.4.0.
+
+proxy_location: EveryNode
+
+http_options:
+
+  host: 0.0.0.0
+
+  port: 8000
+
+applications:
+
+- name: calc
+
+  route_prefix: /calculator
+
+  import_path: calculator:app
+
+  runtime_env: {}
+
+  deployments:
+
+  - name: Adder
+
+  - name: Multiplier
+
+  - name: Router
+
+  - name: DAGDriver
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0
+
+- name: greet
+
+  route_prefix: /greet
+
+  import_path: greet:app
+
+  runtime_env: {}
+
+  deployments:
+
+  - name: greet
+
+  - name: DAGDriver
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0

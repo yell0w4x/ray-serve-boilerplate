@@ -1,0 +1,13 @@
+# This file was generated using the `serve build` command on Ray v2.4.0.
+
+import_path: asdf_deployment:app
+
+runtime_env: {}
+
+host: 0.0.0.0
+
+port: 8000
+
+deployments:
+
+- name: AsdfDeployment
