@@ -12,10 +12,12 @@ Create cluster and deploy something
 
     # Create cluster
     ray up -y cluster.yaml
+    
     # Push code to cluster 
     # It should be ray rsync-up cluster.yaml asdf_deployment.py /home/ray, but somehow it doesn't work
     ray submit cluster.yaml src/serve_native_deployment/asdf_deployment.py
-    # ~/.ssh/ray-autoscaler_us-west-2.pem key file created on first step
+
+    # ~/.ssh/ray-autoscaler_us-west-2.pem key file created on first step, run following line in separate console
     ssh -L 52365:localhost:52365 -nNT -i ~/.ssh/ray-autoscaler_us-west-2.pem -v ubuntu@<head-node-ip>
     serve deploy src/serve_native_deployment/asdf_deployment.yaml
 
