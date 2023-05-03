@@ -1,7 +1,7 @@
 # Minimal Ray cluster web application bolerplate for AWS
 
 > **&#9432;** Make sure that you have active AWS credentials here `~/.aws/credentials`.
-> For successful deploy use python version same to rayproject/ray docker image. At the moment it's python 3.7.
+> For successful deploy use python version same to `rayproject/ray` docker image. At the moment it's python 3.7.
 > I use conda for python install.
 
     git clone https://github.com/yell0w4x/ray-serve-boilerplate.git
