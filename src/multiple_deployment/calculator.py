@@ -5,19 +5,19 @@ from ray.serve.deployment_graph import InputNode
 from ray.serve.http_adapters import json_request
 
 
-@serve.deployment
+@serve.deployment(ray_actor_options={"num_cpus": 0.1, "num_gpus": 0})
 class Adder:
     def __call__(self, input: int) -> int:
         return input + 2
 
 
-@serve.deployment
+@serve.deployment(ray_actor_options={"num_cpus": 0.1, "num_gpus": 0})
 class Multiplier:
     def __call__(self, input: int) -> int:
         return input * 2
 
 
-@serve.deployment
+@serve.deployment(ray_actor_options={"num_cpus": 0.1, "num_gpus": 0})
 class Router:
     def __init__(
         self,

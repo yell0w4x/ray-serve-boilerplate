@@ -4,7 +4,7 @@ from ray.serve.deployment_graph import InputNode
 from ray.serve.http_adapters import json_request
 
 
-@serve.deployment
+@serve.deployment(ray_actor_options={"num_cpus": 0.1, "num_gpus": 0})
 def greet(name: str):
     return f"Good morning {name}!"
 

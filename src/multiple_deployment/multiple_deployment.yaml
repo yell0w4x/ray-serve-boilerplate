@@ -21,10 +21,19 @@ applications:
   deployments:
 
   - name: Adder
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0
 
   - name: Multiplier
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0
 
   - name: Router
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0
 
   - name: DAGDriver
     ray_actor_options:
@@ -42,6 +51,9 @@ applications:
   deployments:
 
   - name: greet
+    ray_actor_options:
+      num_cpus: 0.1
+      num_gpus: 0.0
 
   - name: DAGDriver
     ray_actor_options:
