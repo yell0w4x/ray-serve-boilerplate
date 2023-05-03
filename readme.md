@@ -8,7 +8,11 @@
     cd ray-serve-boilerplate
     pip install -r requirements.txt
 
-Create cluster and deploy something
+Create cluster and run multiple deployment by issuing line as is follows
+
+    ./deploy
+
+Or issue these
 
     # Create cluster
     ray up -y cluster.yaml

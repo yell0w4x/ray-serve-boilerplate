@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+usage() {
+cat << EOF
+Run setup Ray cluster and deploys example deployment.
+
+Usage:
+    ${0}
+
+Options:
+    --help                 Show help message
+    --skip-start-cluster   Skip starting new cluster. If not specified cluster starts if there's no one.
+EOF
+}
+
+while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+        -h|--help)
+            usage
+            exit
+            ;;
+
+        --skip-start-cluster)
+            SKIP_START_CLUSTER=1
+        ;;
+
+        *)
+            echo "Unrecognized arg: ${1}"
+            exit 1
+            ;;
+    esac
+    
+   shift
+done
+
+set -eu
+
+SCRIPT_DIR=$(realpath "$(dirname "${0}")")
+HEAD_IP_ADDR=$(ray get-head-ip "${SCRIPT_DIR}/cluster.yaml" | grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' --color=never) || true
+
+function on_exit {
+    if [ -n "${SSH_TUN_PID+x}" ]; then
+        kill "${SSH_TUN_PID}"
+    fi 
+}
+
+trap on_exit EXIT
+
+# Create cluster
+
+if [ -z "${SKIP_START_CLUSTER+x}" ] && [ -z "${HEAD_IP_ADDR}" ]; then
+    ray up -y "${SCRIPT_DIR}/cluster.yaml"
+fi 
+
+HEAD_IP_ADDR=$(ray get-head-ip "${SCRIPT_DIR}/cluster.yaml" | grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' --color=never)
+echo -e "\e[34mHead node ip: ${HEAD_IP_ADDR}\e[0m"
+
+# Push code to cluster
+# It should be ray rsync-up cluster.yaml asdf_deployment.py /home/ray, but somehow it doesn't work
+ray submit cluster.yaml src/multiple_deployment/calculator.py
+ray submit cluster.yaml src/multiple_deployment/greet.py
+# ~/.ssh/ray-autoscaler_us-west-2.pem key file created on first step
+HOST=localhost
+PORT=52365
+ssh -o StrictHostKeychecking=no -L "${PORT}:${HOST}:${PORT}" -nNT -i ~/.ssh/ray-autoscaler_us-west-2.pem "ubuntu@${HEAD_IP_ADDR}" &>/dev/null &
+SSH_TUN_PID=${!}
+
+"${SCRIPT_DIR}/wait-for-it.sh" "${HOST}:${PORT}" -- echo 'Got tunnel'
+bash -c "cd ${SCRIPT_DIR}/src/multiple_deployment && serve build --multi-app calculator:app greet:app -o multiple_deployment.yaml"
+serve deploy src/multiple_deployment/multiple_deployment.yaml

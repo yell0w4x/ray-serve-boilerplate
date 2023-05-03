@@ -10,7 +10,7 @@ http_options:
 
 applications:
 
-- name: calc
+- name: app1
 
   route_prefix: /calculator
 
@@ -40,7 +40,7 @@ applications:
       num_cpus: 0.1
       num_gpus: 0.0
 
-- name: greet
+- name: app2
 
   route_prefix: /greet
 
