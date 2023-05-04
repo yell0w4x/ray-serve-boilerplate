@@ -62,7 +62,8 @@ ray submit cluster.yaml src/multiple_deployment/greet.py
 # ~/.ssh/ray-autoscaler_us-west-2.pem key file created on first step
 HOST=localhost
 PORT=52365
-ssh -o StrictHostKeychecking=no -L "${PORT}:${HOST}:${PORT}" -nNT -i ~/.ssh/ray-autoscaler_us-west-2.pem "ubuntu@${HEAD_IP_ADDR}" &>/dev/null &
+KEY_FILE="$(ls ~/.ssh/ray*.pem)"
+ssh -o StrictHostKeychecking=no -L "${PORT}:${HOST}:${PORT}" -nNT -i "${KEY_FILE}" "ubuntu@${HEAD_IP_ADDR}" &>/dev/null &
 SSH_TUN_PID=${!}
 
 "${SCRIPT_DIR}/wait-for-it.sh" "${HOST}:${PORT}" -- echo 'Got tunnel'
